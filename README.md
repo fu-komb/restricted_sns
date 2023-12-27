@@ -12,6 +12,7 @@
 
 - リポジトリ直下の階層で `docker compose build`
 - `docker compose run --rm web rails db:create`
+- `docker compose run --rm web rails db:migrate`
 - `docker compose up -d`
 - ブラウザで `0.0.0.0:3001/home` or `localhost:3001/home` にアクセスし、 `{"status":"Your environment is successfully built."}` と表示されれば OK
 
