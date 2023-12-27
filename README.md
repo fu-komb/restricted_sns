@@ -16,6 +16,13 @@
 - `docker compose up -d`
 - ブラウザで `0.0.0.0:3001/home` or `localhost:3001/home` にアクセスし、 `{"status":"Your environment is successfully built."}` と表示されれば OK
 
+- アプリ URL
+  - `localhost:3001`
+- Swagger Editor
+  - `localhost:8001`
+- Swagger UI
+  - `localhost:8002`
+
 ## 実装メモ
 
 ### ユーザー認証(devise)
