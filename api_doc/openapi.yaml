@@ -155,6 +155,9 @@ paths:
                 text:
                   type: string
                   example: "this is a test post text."
+                reply_to_post_id:
+                  type: integer
+                  example: 1
       responses:
         "200":
           description: Post successfully created
