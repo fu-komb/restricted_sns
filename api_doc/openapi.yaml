@@ -1,0 +1,346 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: 絵文字だけSNS API定義書
+  description: >-
+    絵文字だけSNSのAPI定義書です。
+    このAPI定義書は、api_doc/openapi.yamlに記述されています。
+servers:
+  - url: "http://localhost:8003"
+paths:
+  /auth:
+    post:
+      summary: ユーザー登録
+      description: ユーザーの登録を行うためのエンドポイント
+      operationId: auth
+      requestBody:
+        description: ユーザー登録に必要なデータ
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user_email_address@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: nxyJg0RJ7LhfPz09
+                password_confirmation:
+                  type: string
+                  format: password
+                  example: nxyJg0RJ7LhfPz09
+                confirm_success_url:
+                  type: string
+                  format: uri
+                  example: localhost:3001/home
+      responses:
+        "200":
+          description: 成功時のレスポンス
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      provider:
+                        type: string
+                        example: email
+                      uid:
+                        type: string
+                        example: user_email_address@gmail.com
+                      allow_password_change:
+                        type: boolean
+                        example: false
+                      name:
+                        type: string
+                        example: null
+                      nickname:
+                        type: string
+                        example: null
+                      image:
+                        type: string
+                        example: null
+                      email:
+                        type: string
+                        example: user_email_address@gmail.com
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: 2023-12-28T13:56:03.626Z
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: 2023-12-28T13:56:03.684Z
+  /auth/sign_in:
+    post:
+      summary: ログイン
+      description: ログインを行うためのエンドポイント
+      operationId: auth/sign_in
+      requestBody:
+        description: ログインに必要なデータ
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user_email_address@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: nxyJg0RJ7LhfPz09
+      responses:
+        "200":
+          description: 成功時のレスポンス
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: user_email_address@gmail.com
+                      provider:
+                        type: string
+                        example: email
+                      uid:
+                        type: string
+                        example: user_email_address@gmail.com
+                      id:
+                        type: integer
+                        example: 1
+                      allow_password_change:
+                        type: boolean
+                        example: false
+                      name:
+                        type: string
+                        example: null
+                      nickname:
+                        type: string
+                        example: null
+                      image:
+                        type: string
+                        example: null
+  /post:
+    post:
+      summary: Create a new post
+      description: Adds a new post to the system.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: "this is a test post text."
+      responses:
+        "200":
+          description: Post successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+    get:
+      summary: Get all posts
+      description: Retrieves a list of all posts.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: A list of posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        user_id:
+                          type: integer
+                        text:
+                          type: string
+                        reply_to_post_id:
+                          type: integer
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                    example:
+                      - id: 1
+                        user_id: 1
+                        text: "this is a test post text."
+                        reply_to_post_id: null
+                        created_at: "2023-12-28T14:53:51.639Z"
+                        updated_at: "2023-12-28T14:53:51.639Z"
+  /user/follow:
+    post:
+      summary: Follow a user
+      description: follows a user based on the provided followee user ID.
+      parameters:
+        - in: query
+          name: followee_user_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to follow.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successfully followed the user
+        "401":
+          description: Unauthorized request, bearer token required
+        "404":
+          description: User not found
+  /user/unfollow:
+    delete:
+      summary: Unfollow a user
+      description: Unfollows a user based on the provided followee user ID.
+      parameters:
+        - in: query
+          name: followee_user_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to unfollow.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successfully unfollowed the user
+        "401":
+          description: Unauthorized request, bearer token required
+        "404":
+          description: User not found
+  /user/block:
+    post:
+      summary: block a user
+      description: blocks a user based on the provided blockee user ID.
+      parameters:
+        - in: query
+          name: blockee_user_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to block.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successfully blocked the user
+        "401":
+          description: Unauthorized request, bearer token required
+        "404":
+          description: User not found
+  /user/unblock:
+    delete:
+      summary: Unblock a user
+      description: Unblocks a user based on the provided blockee user ID.
+      parameters:
+        - in: query
+          name: blockee_user_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to unblock.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successfully unblocked the user
+        "401":
+          description: Unauthorized request, bearer token required
+        "404":
+          description: User not found
+  /post/timeline:
+    get:
+      summary: Get user's timeline posts
+      description: Retrieves posts for the user's timeline. Can specify the last datetime when posts were fetched.
+      parameters:
+        - in: query
+          name: last_got_at
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: 最後にtimelineを取得した日付を渡した場合はそれ以降のpostのみを取得する。
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: A list of posts for the timeline
+        "401":
+          description: Unauthorized request, bearer token required
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+# components:
+#   schemas:
+#     User:
+#       type: "object"
+#       required:
+#         - "name"
+#       properties:
+#         id:
+#           type: "integer"
+#           format: "int64"
+#           example: 100
+#         name:
+#           type: "string"
+#           example: "Taro"
+#         status:
+#           type: "string"
+#           description: "user status"
+#           enum:
+#             - "pending"
+#             - "active"
+#             - "inactive"
+#     Error:
+#       type: "object"
+#       properties:
+#         code:
+#           type: "integer"
+#           format: "int32"
+#         type:
+#           type: "string"
+#         message:
+#           type: "string"
+# externalDocs:
+#   description: "Find out more about Swagger"
+#   url: "http://swagger.io"

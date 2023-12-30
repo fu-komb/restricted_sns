@@ -20,7 +20,7 @@
   - `localhost:3001`
 - Swagger Editor
   - `localhost:8001`
-- Swagger UI
+- Swagger UI(このアプリの API 定義書が確認できる。実態は api_doc/openapi.yaml)
   - `localhost:8002`
 
 ## 実装メモ

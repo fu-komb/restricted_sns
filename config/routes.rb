@@ -8,4 +8,15 @@ Rails.application.routes.draw do
   end
 
   resources :home, :only => [:index]
+
+  resources :post, :only => [:index, :create] do
+    collection do
+      get :timeline
+    end
+  end
+
+  post '/user/follow', to: 'user#follow'
+  delete '/user/unfollow', to: 'user#unfollow'
+  post '/user/block', to: 'user#block'
+  delete '/user/unblock', to: 'user#unblock'
 end
